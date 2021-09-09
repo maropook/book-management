@@ -85,6 +85,8 @@ http://localhost:8000/rakuten
 
 [Django REST Frameworkを使って爆速でAPIを実装する](https://qiita.com/kimihiro_n/items/86e0a9e619720e57ecd8)
 
+この記事を参考に，楽天bookAPIから取得したいカラムでデータベースを作成した．
+
 __CORS設定__
 
 DRFを使って、APIエンドポイントをフロントエンドから叩く場合にはCORSの設定が必要
@@ -106,7 +108,7 @@ http://localhost:8000/book/book
 
 DRFが起動しているか確認
 
-
+全てCDNから取得してvue.jsをaxiosを使用しています．
 
 
 REST APIを作成するには最低限以下の3つを定義する必要があります。
