@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>The greatest news app ever</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+    <!--<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.css">
+-->
+    <style>
+        html {
+            overflow-y: scroll;
+        }
+
+        body {
+            padding-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="article">
+        <div id="starting">
+            <div class="container">
+
+
+                <div class="form-inline my-2 my-lg-0">
+                    <input type="checkbox" id="checkbox" v-model="direct_flug">
+                    <label for="checkbox">alertを出す．同じ本が登録されているか，正しく登録されたか確認する．</label>
+                    <p>isbn入力(falt)での追加ボタンやエンターキーはテキストボックスが空になってから</p>
+                    <br>
+                    <form v-on:submit.prevent="addBookDirect('direct')">
+                        <div class="row">
+                            <h2>
+                                ISBN入力(fast)
+                            </h2>
+                            &emsp;
+                            <div class="form-inline my-2 my-lg-0">
+                                <input class="form-control mr-sm-2" type="text" placeholder="Search"
+                                    v-model="search_rakuten_books" aria-label=" Search" ref="direct_isbn" />
+                                <button class="btn btn-outline-primary my-2 my-sm-0"
+                                    v-on:click.prevent="addBookDirect('direct')">
+                                    追加
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+                <div class="row">
+                    <h2>
+                        ISBN入力
+                    </h2>
+                    &emsp;
+                    <div class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="text" placeholder="Search"
+                            v-model="search_rakuten_books" aria-label=" Search" />
+                        <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getRakutenBooks()">
+                            検索
+                        </button>
+                        <button class="btn btn-outline-primary my-2 my-sm-0" v-on:click.prevent="addArticleDirect()">
+                            追加
+                        </button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#addArticleModal">
+                            手入力追加
+                        </button>
+
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+
+                                <th scope="col">画像</th>
+                                <th scope="col">タイトル</th>
+                                <th scope="col">タイトルカナ</th>
+                                <th scope="col">著者名</th>
+                                <th scope="col">著者名カナ</th>
+                                <th scope="col">isbnコード</th>
+                                <th scope="col">発売日</th>
+
+                                <th scope="col">アクション</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <th scope="row"><img :src="rakuten_books.smallImageUrl" alt=""></th>
+                            <th scope="row"><a target="_blank" :href="rakuten_books.itemUrl">{{rakuten_books.title}}</a>
+                            </th>
+                            <th scope="row">{{rakuten_books.titleKana}}</th>
+                            <th scope="row">{{rakuten_books.author}}</th>
+                            <th scope="row">{{rakuten_books.authorKana}}</th>
+                            <th scope="row">{{rakuten_books.isbn}}</th>
+                            <th scope="row">{{rakuten_books.salesDate}}</th>
+                            <td>
+                                <button v-if="flug" class="btn btn-primary" v-on:click="addArticle()">
+                                    追加
+                                </button>
+                                <button v-if="flug" class="btn btn-info" v-on:click="searchArticle(rakuten_books.isbn)">
+                                    検索
+                                </button>
+
+                            </td>
+
+
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <h2>
+                        書籍一覧
+                    </h2>
+                    &emsp;
+                    <div class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term"
+                            aria-label="Search" />
+                        <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getArticles()">
+                            Search
+                        </button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+
+                                <th scope="col">タイトル</th>
+                                <th scope="col">タイトルカナ</th>
+                                <th scope="col">著者名</th>
+                                <th scope="col">著者名カナ</th>
+                                <th scope="col">isbnコード</th>
+                                <th scope="col">発売日</th>
+                                <th scope="col">アクション</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <tbody>
+                            <tr v-for="(article,index) in articles" :key="index">
+                                <th scope="row">{{article.title}}</th>
+                                <th scope="row">{{article.title_kana}}</th>
+
+                                <th scope="row">{{article.author}}</th>
+                                <th scope="row">{{article.author_kana}}</th>
+                                <th scope="row">{{article.isbn}}</th>
+                                <th scope="row">{{article.sales_date}}</th>
+
+                                <td>
+                                    <button class="btn btn-info" v-on:click="getArticle(article.book_id)"
+                                        data-toggle="modal" data-target="#editArticleModal">
+                                        編集
+                                    </button>
+                                    <button class="btn btn-danger" v-on:click="getArticle(article.book_id)"
+                                        data-toggle="modal" data-target="#deleteArticleModal">
+                                        削除
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Add Article Modal -->
+                    <div class="modal fade" id="addArticleModal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">
+                                        新規追加 手で入力するか，Isbnコードを入力してください
+
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form v-on:submit.prevent="addArticle()">
+
+
+                                    <div class="modal-body">
+
+                                        <input class="form-control mr-sm-2" type="text" placeholder="Search"
+                                            v-model="search_rakuten_books" aria-label=" Search" />
+                                        <button class="btn btn-outline-success my-2 my-sm-0"
+                                            v-on:click.prevent="getRakutenBooks()">
+                                            Isbnコードで自動入力
+                                        </button>
+
+                                        <div class="form-group">
+                                            <label for="title">タイトル</label>
+                                            <input type="text" class="form-control" id="title"
+                                                placeholder="タイトルを入力してください" v-model="newArticle.title"
+                                                required="required" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="title_kana">タイトルカナ</label>
+                                            <input type="text" class="form-control" id="title_kana"
+                                                placeholder="タイトルを入力してください" v-model="newArticle.title_kana"
+                                                required="required" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="author">author</label>
+                                            <input type="text" class="form-control" id="author"
+                                                placeholder="タイトルを入力してください" v-model="newArticle.author"
+                                                required="required" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="author_kana">author_kana</label>
+                                            <input type="text" class="form-control" id="author_kana"
+                                                placeholder="タイトルを入力してください" v-model="newArticle.author_kana"
+                                                required="required" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="isbn">isbn</label>
+                                            <input type="text" class="form-control" id="isbn"
+                                                placeholder="タイトルを入力してください" v-model="newArticle.isbn"
+                                                required="required" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="sales_date">sales_date</label>
+                                            <input type="text" class="form-control" id="sales_date"
+                                                placeholder="タイトルを入力してください" v-model="newArticle.sales_date"
+                                                required="required" />
+                                        </div>
+
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">
+                                            閉じる
+                                        </button>
+                                        <button type="submit" class="btn btn-primary">
+                                            保存
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                    </div>
+                    <!-- End of add article modal -->
+                    <!-- Edit Article Modal -->
+                    <div class="modal fade" id="editArticleModal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">
+                                        編集
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form v-on:submit.prevent="updateArticle()">
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="title">タイトル</label>
+                                            <input type="text" class="form-control" id="title"
+                                                placeholder="タイトルを入力してください" v-model="currentArticle.title"
+                                                required="required" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="title_kana">タイトルカナ</label>
+                                            <input type="text" class="form-control" id="title_kana"
+                                                placeholder="タイトルを入力してください" v-model="currentArticle.title_kana"
+                                                required="required" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="author">author</label>
+                                            <input type="text" class="form-control" id="author"
+                                                placeholder="タイトルを入力してください" v-model="currentArticle.author"
+                                                required="required" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="author_kana">author_kana</label>
+                                            <input type="text" class="form-control" id="author_kana"
+                                                placeholder="タイトルを入力してください" v-model="currentArticle.author_kana"
+                                                required="required" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="isbn">isbn</label>
+                                            <input type="text" class="form-control" id="isbn"
+                                                placeholder="タイトルを入力してください" v-model="currentArticle.isbn"
+                                                required="required" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="sales_date">sales_date</label>
+                                            <input type="text" class="form-control" id="sales_date"
+                                                placeholder="タイトルを入力してください" v-model="currentArticle.sales_date"
+                                                required="required" />
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">
+                                            閉じる
+                                        </button>
+                                        <button type="submit" class="btn btn-primary">
+                                            保存
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                    </div>
+                    <!-- End of edit article modal -->
+                    <div class="modal fade" id="deleteArticleModal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">
+                                        本当に削除しますか？
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form v-on:submit.prevent=deleteArticle(currentArticle.book_id)>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">
+                                            閉じる
+                                        </button>
+                                        <button type="submit" class="btn btn-danger">
+                                            削除
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                    </div>
+                </div>
+            </div>
+            <div class="loading" v-if="loading===true">Loading&#8230;</div>
+        </div>
+    </div>
+    <!-- bootrtap js files -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+        </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+        </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+        </script>
+    <script src="https://unpkg.com/vue"></script>
+    <script>
+
+        const vm = new Vue({
+            el: "#starting",
+            data: {
+                direct_flug: false,
+                flug: false,
+                articles: [],
+
+                isbns: [],
+                checkIsbn: [],
+                loading: true,
+                currentArticle: {},
+                message: null,
+                newArticle:
+                {
+                    title: null,
+                    title_kana: null,
+                    author: null,
+                    author_kana: null,
+                    isbn: null,
+                    sales_date: null,
+                },
+                search_term: "",
+                rakuten_books: [],
+                search_rakuten_books: "",
+
+                parPage: 20,
+                currentPage: 1,
+            },
+            mounted: function () {
+
+                this.getArticles();
+                this.getAllIsbns();
+
+
+
+            },
+            methods: {
+
+                getArticles: function () {
+                    console.log('getarticleしています');
+                    let api_url = "http://localhost:8000/book/book";
+                    if (this.search_term !== "" || this.search_term !== null) {
+                        api_url = `http://localhost:8000/book/book/?search=${this.search_term}`;
+                    }
+
+                    axios
+                        .get(api_url)
+                        .then(response => {
+                            this.articles = response.data;
+                            this.loading = false;
+                            console.log(this.articles);
+
+                        })
+                        .catch(err => {
+                            this.loading = false;
+                            console.log(err);
+                            console.log('getarticleserr');
+                        });
+                },
+                getArticle: function (id) {
+                    //編集や削除をするため
+                    axios
+                        .get(`http://localhost:8000/book/book/${id}/`)
+                        .then(response => {
+                            this.currentArticle = response.data;
+                            this.loading = false;
+                        })
+                        .catch(err => {
+                            this.loading = false;
+                            console.log(err);
+                        });
+                },
+                searchArticle: function (id) {
+
+                    let api_url = `http://localhost:8000/book/book/?search=${id}`;
+
+                    axios
+                        .get(api_url)
+                        .then(response => {
+                            this.articles = response.data;
+                            this.loading = false;
+                        })
+                        .catch(err => {
+                            this.loading = false;
+                            console.log(err);
+                            console.log('getarticleserr');
+                        });
+                },
+                addArticle: function () {
+                    console.log('え');
+                    axios
+                        .post("http://localhost:8000/book/book/", this.newArticle)
+                        .then(response => {
+
+                            this.newArticle =
+                            {
+                                title: null,
+                                title_kana: null,
+                                author: null,
+                                author_kana: null,
+                                isbn: null,
+                                sales_date: null,
+                            },
+
+                                this.getArticles();
+
+                            $("#addArticleModal").modal('toggle');
+                            console.log('成功');
+                        })
+                        .catch(err => {
+                            this.loading = true;
+                            console.log(err);
+                        });
+                },
+                addArticle: function (id) {
+                    //addArticleDirectのための．モーダルが表示されない
+                    axios
+                        .post("http://localhost:8000/book/book/", this.newArticle)
+                        .then(response => {
+
+                            if (this.direct_flug == true) { alert(this.newArticle.title + "を追加しました"); }
+                            this.newArticle =
+                            {
+                                title: null,
+                                title_kana: null,
+                                author: null,
+                                author_kana: null,
+                                isbn: null,
+                                sales_date: null,
+                            },
+                                this.getArticles();
+                            console.log('addarticle成功');
+                        })
+                        .catch(err => {
+                            this.loading = false;
+                            console.log(err);
+                        });
+
+
+                },
+                deleteArticle: function (id) {
+                    this.loading = true;
+                    axios
+                        .delete(`http://localhost:8000/book/book/${id}/`)
+                        .then(response => {
+                            this.loading = false;
+                            this.getArticles();
+                            $("#deleteArticleModal").modal('toggle');
+                        })
+                        .catch(err => {
+                            this.loading = false;
+                            console.log(err);
+                        });
+                },
+                updateArticle: function () {
+                    console.log('アプデ');
+                    this.loading = true;
+                    axios
+                        .put(
+                            `http://localhost:8000/book/book/${this.currentArticle.book_id}/`,
+                            this.currentArticle
+                        )
+                        .then(response => {
+                            this.loading = false;
+                            this.currentArticle = response.data;
+                            this.getArticles();
+                            $("#editArticleModal").modal('toggle');
+                        })
+                        .catch(err => {
+                            this.loading = false;
+                            console.log(err);
+                        });
+                },
+                getRakutenBooks: function () {
+                    this.search_rakuten_books = this.search_rakuten_books.replace(/\s+/g, "");
+                    //IsbnSearch かくにんせず追加，新規登録から呼び出される
+                    for (let i = 0; i < this.checkIsbn.length; i++) {
+                        if (this.checkIsbn[i] == this.search_rakuten_books) {
+                            if (this.direct_flug == true) { alert('この書籍は登録済みです'); }
+                            break;
+                        }
+                    }
+                    //ISBN検索
+                    let api_url = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?applicationId=1089485087595106373&isbn=${this.search_rakuten_books}`;
+                    if (this.search_rakuten_books != "" && this.search_rakuten_books != null) {
+
+                        this.api_url = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?applicationId=1089485087595106373&isbn=${this.search_rakuten_books}`;
+                        console.log(this.api_url);
+                        console.log(this.search_rakuten_books);
+                        this.loading = false;
+                        axios
+                            .get(api_url)
+                            .then(response => {
+                                //検索結果をnewArticleに代入．
+                                this.rakuten_books = response.data["Items"][0].Item
+                                this.newArticle.title = this.rakuten_books.title;
+                                this.newArticle.title_kana = this.rakuten_books.titleKana;
+                                this.newArticle.author = this.rakuten_books.author;
+                                this.newArticle.author_kana = this.rakuten_books.authorKana;
+                                this.newArticle.isbn = this.rakuten_books.isbn;
+                                this.newArticle.sales_date = this.rakuten_books.salesDate;
+                                this.loading = false;
+                                this.flug = true;
+                            })
+                            .catch(err => {
+                                this.loading = false;
+                                console.log(err);
+                                console.log('データを取得できませんでした');
+                                alert('データを取得できませんでした');
+                                this.loading = false;
+                            });
+                    } else {
+                        alert('値を入力してください');
+                        this.loading = false;
+                    }
+                },
+                addArticleDirect: function () {
+                    this.getRakutenBooks();//isbnコードからデータをgetし，その値をnewArticleに代入する．
+
+                    setTimeout(() => {
+                        this.addArticle('コメント');//1秒後にnewArticleがpostされる
+                    }, 1000)
+                },
+                addBookDirect: function (id) {
+                    //ISBN入力(fast)
+                    this.getRakutenBooks();//isbnコードからデータをgetし，その値をnewArticleに代入する．
+                    setTimeout(() => {
+                        this.addArticle('コメント');
+                        this.search_rakuten_books = "";
+                        this.rakuten_books = [];
+                        this.flug = false;
+                        //1秒後にnewArticleがpostされる
+                    }, 1000)
+                },
+                clickCallback: function (pageNum) {
+                    this.currentPage = Number(pageNum);
+                },
+
+                getAllIsbns: function () {
+                    let api_url = "http://localhost:8000/book/book";
+                    this.loading = true;
+                    axios
+                        .get(api_url)
+                        .then(response => {
+                            this.isbns = response.data
+                            // this.isbns = response.data.length
+                            for (let i = 0; i < this.isbns.length; i++) {
+                                this.checkIsbn[i] = this.isbns[i].isbn;
+                                // console.log(this.checkIsbn[i]);
+                            }
+
+                            this.loading = false;
+                        })
+                        .catch(err => {
+                            this.loading = false;
+                            console.log(err);
+                            console.log('getarticleserr');
+                        });
+                },
+            },
+        });
+
+
+    </script>
+    <script src="https://unpkg.com/vuejs-paginate@2.1.0"></script>
+
+</body>
+
+</html>
