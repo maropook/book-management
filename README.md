@@ -51,11 +51,6 @@ __Djangoの設定__
 
 ```bash
 
-
-
-#migrationファイルを作る(model.pyファイルをもとに)
-$python manage.py makemigrations
-
 #migrationファイルからデータベースを作成
 $python manage.py migrate
 
