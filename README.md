@@ -37,8 +37,7 @@ __書籍管理システム本体のインストール__
 ```bash
 
 #このプロジェクトを自分のPCにインストール
-$git clone https://github.com/maropook/BookManagement.git
-
+$git clone https://github.com/maropook/book_management.git
 #book_managementディレクトリに移動
 $cd book_management
 
