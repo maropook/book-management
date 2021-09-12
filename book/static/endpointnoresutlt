@@ -24,9 +24,11 @@
 
 <body>
 
+
     <div class="article">
         <div id="starting">
             <div class="container">
+
 
                 <div class="form-inline my-2 my-lg-0">
                     <input type="checkbox" id="checkbox" v-model="direct_flug">
@@ -343,6 +345,8 @@
         </div>
     </div>
     <!-- bootrtap js files -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
         </script>
@@ -352,7 +356,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
         </script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue"></script>
     <script>
 
@@ -362,6 +365,7 @@
                 direct_flug: false,
                 flug: false,
                 articles: [],
+
                 isbns: [],
                 checkIsbn: [],
                 loading: true,
@@ -384,15 +388,17 @@
                 currentPage: 1,
             },
             mounted: function () {
+
                 this.getArticles();
                 this.getAllIsbns();
 
-                this.$refs.direct_isbn.focus(); // OK
+
 
             },
             methods: {
 
                 getArticles: function () {
+                    console.log('getarticleしています');
                     let api_url = "http://localhost:8000/book/book";
                     if (this.search_term !== "" || this.search_term !== null) {
                         api_url = `http://localhost:8000/book/book/?search=${this.search_term}`;
@@ -401,8 +407,10 @@
                     axios
                         .get(api_url)
                         .then(response => {
-                            this.articles = response.data.results;
+                            this.articles = response.data;
                             this.loading = false;
+                            console.log(this.articles);
+
                         })
                         .catch(err => {
                             this.loading = false;
@@ -412,8 +420,6 @@
                 },
                 getArticle: function (id) {
                     //編集や削除をするため
-
-
                     axios
                         .get(`http://localhost:8000/book/book/${id}/`)
                         .then(response => {
@@ -432,7 +438,7 @@
                     axios
                         .get(api_url)
                         .then(response => {
-                            this.articles = response.data.results;
+                            this.articles = response.data;
                             this.loading = false;
                         })
                         .catch(err => {
@@ -490,6 +496,8 @@
                             this.loading = false;
                             console.log(err);
                         });
+
+
                 },
                 deleteArticle: function (id) {
                     this.loading = true;
@@ -595,8 +603,8 @@
                     axios
                         .get(api_url)
                         .then(response => {
-                            this.isbns = response.data.results
-                            // this.isbns = response.data.results.length
+                            this.isbns = response.data
+                            // this.isbns = response.data.length
                             for (let i = 0; i < this.isbns.length; i++) {
                                 this.checkIsbn[i] = this.isbns[i].isbn;
                                 // console.log(this.checkIsbn[i]);
@@ -609,26 +617,11 @@
                             console.log(err);
                             console.log('getarticleserr');
                         });
-
-
                 },
             },
-            computed: {
-                getItems: function () {
-                    let current = this.currentPage * this.parPage;
-                    let start = current - this.parPage;
-                    return this.articles.slice(start, current);
-                },
-                getPageCount: function () {
-                    return Math.ceil(this.articles.length / this.parPage);
-                }
-            }
         });
-
-
     </script>
     <script src="https://unpkg.com/vuejs-paginate@2.1.0"></script>
-
 </body>
 
 </html>
