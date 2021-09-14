@@ -393,7 +393,7 @@
             methods: {
 
                 getArticles: function () {
-                    let api_url = "http://localhost:8000/book/book";
+                    let api_url = "http://localhost:8000/book/book/";
                     if (this.search_term !== "" || this.search_term !== null) {
                         api_url = `http://localhost:8000/book/book/?search=${this.search_term}`;
                     }
@@ -427,7 +427,7 @@
                 },
                 searchArticle: function (id) {
 
-                    let api_url = `http://localhost:8000/book/book/?search=${id}`;
+                    let api_url = `http://localhost:8000/book/book/?search=${id}/`;
 
                     axios
                         .get(api_url)
@@ -590,7 +590,7 @@
                 },
 
                 getAllIsbns: function () {
-                    let api_url = "http://localhost:8000/book/book";
+                    let api_url = "http://localhost:8000/book/book/";
                     this.loading = true;
                     axios
                         .get(api_url)
@@ -599,7 +599,7 @@
                             // this.isbns = response.data.results.length
                             for (let i = 0; i < this.isbns.length; i++) {
                                 this.checkIsbn[i] = this.isbns[i].isbn;
-                                // console.log(this.checkIsbn[i]);
+                                console.log(this.checkIsbn[i]);
                             }
 
                             this.loading = false;
