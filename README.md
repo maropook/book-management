@@ -21,13 +21,16 @@ __書籍管理システム使用に必要なモジュールをインストール
 
 
 #Django本体
-$pip install django
+$ pip install django
 
 #CORS対策モジュール
-$pip install django-cors-headers
+$ pip install django-cors-headers
+
+#django-filter
+$ pip install django-filter
 
 #RESTフレームワーク。
-$pip install djangorestframework 
+$ pip install djangorestframework
 
 ```
 ***
