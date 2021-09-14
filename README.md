@@ -2,7 +2,7 @@
   __開発環境__
 
 * OS: `macOS Big Sur v11.5.2`
-* Python: `Python 3.0.6`
+* Python: `Python 3.9.6`
 * Django: `3.2.5`
 
 # 使い方
