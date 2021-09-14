@@ -40,10 +40,10 @@ __書籍管理システム本体のインストール__
 ```bash
 
 #このプロジェクトを自分のPCにインストール
-$git clone https://github.com/maropook/book_management.git
+$ git clone https://github.com/maropook/book_management.git
 
 #book_managementディレクトリに移動
-$cd book_management
+$ cd book_management
 
 ```
 
@@ -55,7 +55,7 @@ __Djangoの設定__
 ```bash
 
 #migrationファイルからデータベースを作成
-$python manage.py migrate
+$ python manage.py migrate
 
 
 ```
@@ -66,7 +66,7 @@ __書籍管理システムを起動__
 ```bash
 
 # 開発サーバーを起動
-$python manage.py runserver
+$ python manage.py runserver
 
 ```
 
@@ -102,7 +102,7 @@ __動作確認__
 ```bash
 
 # 開発サーバーを起動
-$python manage.py runserver
+$ python manage.py runserver
 
 ```
 
