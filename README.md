@@ -70,12 +70,12 @@ $ python manage.py runserver
 
 ```
 
-http://localhost:8000/book/book
+http://localhost:8000/book/book/
 
 DRFが起動しているか確認
 
 
-http://localhost:8000/rakuten
+http://localhost:8000/rakuten/
 
 書籍管理システムの利用
 
@@ -107,7 +107,7 @@ $ python manage.py runserver
 ```
 
 
-http://localhost:8000/book/book
+http://localhost:8000/book/book/
 
 DRFが起動しているか確認
 
